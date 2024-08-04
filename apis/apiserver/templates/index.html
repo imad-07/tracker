@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artist Cards</title>
+</head>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    justify-items: center;
+  }
+
+  .card {
+    font-size: smaller;
+    overflow: visible;
+    text-align: center;
+    width: 200px;
+    height: 350px;
+    perspective: 1000px;
+
+  }
+
+  .front {
+    background-color: #ffe4c4;
+    border: 5px solid black;
+  }
+
+  .back {
+    background-color: #b4ceff;
+    border: 5px solid rgb(0, 0, 0);
+  }
+
+  .front,
+  .back {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+    transition: transform 0.9s;
+
+  }
+
+  .front img {
+    height: 100px;
+    border-radius: 50%;
+    border: solid 2px black;
+    position: absolute;
+    bottom: -20px;
+    transform: translateX(-50%);
+    margin-top: 5px;
+  }
+
+  .back {
+    transform: rotateY(180deg);
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  .card:hover .front {
+    transform: rotateY(180deg);
+  }
+
+  .card:hover .back {
+    transform: rotateY(0deg);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgb(218, 213, 213);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+  header{
+    width: 100%;
+    height: 30%;
+    text-align: center;
+    border: black,solid;
+    background-color: bisque;
+    }
+.filter-bar-container {
+  width: 100%;
+    height: 30%;
+    text-align: center;
+    border: black,solid;
+    margin: auto;
+    padding: 20px;
+    background-color: bisque;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.filter-bar {
+    text-align: center;
+}
+
+.filter-bar h1 {
+    font-size: 36px;
+    color: #000000;
+    margin-bottom: 20px;
+}
+
+.filter {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+}
+
+.filter label {
+    font-size: 20px;
+    color: #000000;
+    flex: 1;
+    text-align: left;
+}
+
+.filter input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    background: #000000;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    margin-left: 10px;
+}
+
+.filter input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #b4ceff;
+    cursor: pointer;
+}
+
+.filter input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #b4ceff;
+    cursor: pointer;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 2;
+}
+
+.checkbox-group label {
+    margin-right: 10px;
+    font-size: 16px;
+    color: #000000;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.filter select {
+    flex: 2;
+    padding: 5px;
+    font-size: 18px;
+    margin-left: 20px;
+}
+
+.filter span {
+    margin-left: 10px;
+    font-size: 18px;
+    color: #000000;
+}
+button {
+  width: 100px;
+  font-size: 25px;
+  text-decoration: underline;
+  border:#000000,solid,1px;
+  border-radius: 5px;
+  transition: background-color 0.5s ease; 
+      }
+
+button:hover {
+  border:#000000,solid,1px;
+  border-radius: 5px;
+  background-color: #b4ceff;
+        }
+</style>
+
+<body>
+  <form action="/" method="get">
+    <div class="filter-bar-container">
+      <div class="filter-bar">
+          <h1>Filter Bar</h1>
+          <div class="filter">
+              <label for="creation-date-from">Creation Date</label>
+              <input type="range" id="creation-date-from" name="creation-date-from" min="1958" max="2014" value="1958" step="1" oninput="updateValue('creation-date-from')">
+              <span id="creation-date-from-value">1958</span>
+              <span>to</span>
+              <input type="range" id="creation-date-to" name="creation-date-to" min="1959" max="2015" value="2015" step="1" oninput="updateValue('creation-date-to')">
+              <span id="creation-date-to-value">2015</span>
+          </div>
+          <div class="filter">
+              <label for="album-date-from">Album Date</label>
+              <input type="range" id="album-date-from" name="album-date-from" min="1963" max="2017" value="1963" step="1" oninput="updateValue('album-date-from')">
+              <span id="album-date-from-value">1963</span>
+              <span>to</span>
+              <input type="range" id="album-date-to" name="album-date-to" min="1964" max="2018" value="2018" step="1" oninput="updateValue('album-date-to')">
+              <span id="album-date-to-value">2018</span>
+          </div>
+          <div class="filter">
+              <label>Members</label>
+              <div class="checkbox-group">
+                  <label><input type="checkbox" name="members" value="1">1</label>
+                  <label><input type="checkbox" name="members" value="2">2</label>
+                  <label><input type="checkbox" name="members" value="3">3</label>
+                  <label><input type="checkbox" name="members" value="4">4</label>
+                  <label><input type="checkbox" name="members" value="5">5</label>
+                  <label><input type="checkbox" name="members" value="6">6</label>
+                  <label><input type="checkbox" name="members" value="7">7</label>
+                  <label><input type="checkbox" name="members" value="8">8</label>
+              </div>
+          </div>
+          <div class="filter">
+              <label for="locations">Locations</label>
+              <select id="locations" name="location">
+                <option value="none" disabled hidden selected>Select a location</option>
+                <option value="north_carolina-usa" name="location">north_carolina-usa</option>
+                <option value="georgia-usa" name="location">georgia-usa</option>
+                <option value="los_angeles-usa" name="location">los_angeles-usa</option>
+                <option value="saitama-japan" name="location">saitama-japan</option>
+                <option value="osaka-japan" name="location">osaka-japan</option>
+                <option value="nagoya-japan" name="location">nagoya-japan</option>
+                <option value="penrose-new_zealand" name="location">penrose-new_zealand</option>
+                <option value="dunedin-new_zealand" name="location">dunedin-new_zealand</option>
+                <option value="playa_del_carmen-mexico" name="location">playa_del_carmen-mexico</option>
+                <option value="papeete-french_polynesia" name="location">papeete-french_polynesia</option>
+                <option value="noumea-new_caledonia" name="location">noumea-new_caledonia</option>
+                <option value="london-uk" name="location">london-uk</option>
+                <option value="lausanne-switzerland" name="location">lausanne-switzerland</option>
+                <option value="lyon-france" name="location">lyon-france</option>
+                <option value="victoria-australia" name="location">victoria-australia</option>
+                <option value="new_south_wales-australia" name="location">new_south_wales-australia</option>
+                <option value="queensland-australia" name="location">queensland-australia</option>
+                <option value="auckland-new_zealand" name="location">auckland-new_zealand</option>
+                <option value="yogyakarta-indonesia" name="location">yogyakarta-indonesia</option>
+                <option value="bratislava-slovakia" name="location">bratislava-slovakia</option>
+                <option value="budapest-hungary" name="location">budapest-hungary</option>
+                <option value="minsk-belarus" name="location">minsk-belarus</option>
+                <option value="california-usa" name="location">california-usa</option>
+                <option value="nevada-usa" name="location">nevada-usa</option>
+                <option value="sao_paulo-brazil" name="location">sao_paulo-brazil</option>
+                <option value="san_isidro-argentina" name="location">san_isidro-argentina</option>
+                <option value="arizona-usa" name="location">arizona-usa</option>
+                <option value="texas-usa" name="location">texas-usa</option>
+                <option value="stockholm-sweden" name="location">stockholm-sweden</option>
+                <option value="werchter-belgium" name="location">werchter-belgium</option>
+                <option value="lisbon-portugal" name="location">lisbon-portugal</option>
+                <option value="bilbao-spain" name="location">bilbao-spain</option>
+                <option value="bogota-colombia" name="location">bogota-colombia</option>
+                <option value="new_york-usa" name="location">new_york-usa</option>
+                <option value="dusseldorf-germany" name="location">dusseldorf-germany</option>
+                <option value="aarhus-denmark" name="location">aarhus-denmark</option>
+                <option value="manchester-uk" name="location">manchester-uk</option>
+                <option value="frankfurt-germany" name="location">frankfurt-germany</option>
+                <option value="berlin-germany" name="location">berlin-germany</option>
+                <option value="copenhagen-denmark" name="location">copenhagen-denmark</option>
+                <option value="doha-qatar" name="location">doha-qatar</option>
+                <option value="minnesota-usa" name="location">minnesota-usa</option>
+                <option value="illinois-usa" name="location">illinois-usa</option>
+                <option value="mumbai-india" name="location">mumbai-india</option>
+                <option value="abu_dhabi-united_arab_emirates" name="location">abu_dhabi-united_arab_emirates</option>
+                <option value="pennsylvania-usa" name="location">pennsylvania-usa</option>
+                <option value="westcliff_on_sea-uk" name="location">westcliff_on_sea-uk</option>
+                <option value="merkers-germany" name="location">merkers-germany</option>
+                <option value="florida-usa" name="location">florida-usa</option>
+                <option value="south_carolina-usa" name="location">south_carolina-usa</option>
+                <option value="pagney_derriere_barine-france" name="location">pagney_derriere_barine-france</option>
+                <option value="hamburg-germany" name="location">hamburg-germany</option>
+                <option value="boulogne_billancourt-france" name="location">boulogne_billancourt-france</option>
+                <option value="nimes-france" name="location">nimes-france</option>
+                <option value="sion-switzerland" name="location">sion-switzerland</option>
+                <option value="ostrava-czechia" name="location">ostrava-czechia</option>
+                <option value="klagenfurt-austria" name="location">klagenfurt-austria</option>
+                <option value="freyming_merlebach-france" name="location">freyming_merlebach-france</option>
+                <option value="zaragoza-spain" name="location">zaragoza-spain</option>
+                <option value="madrid-spain" name="location">madrid-spain</option>
+                <option value="barcelona-spain" name="location">barcelona-spain</option>
+                <option value="recife-brazil" name="location">recife-brazil</option>
+                <option value="leipzig-germany" name="location">leipzig-germany</option>
+                <option value="salem-germany" name="location">salem-germany</option>
+                <option value="monchengladbach-germany" name="location">monchengladbach-germany</option>
+                <option value="cuxhaven-germany" name="location">cuxhaven-germany</option>
+                <option value="skanderborg-denmark" name="location">skanderborg-denmark</option>
+                <option value="amsterdam-netherlands" name="location">amsterdam-netherlands</option>
+                <option value="burriana-spain" name="location">burriana-spain</option>
+                <option value="oulu-finland" name="location">oulu-finland</option>
+                <option value="napoca-romania" name="location">napoca-romania</option>
+                <option value="riyadh-saudi_arabia" name="location">riyadh-saudi_arabia</option>
+                <option value="canton-usa" name="location">canton-usa</option>
+                <option value="quebec-canada" name="location">quebec-canada</option>
+                <option value="maine-usa" name="location">maine-usa</option>
+                <option value="rotterdam-netherlands" name="location">rotterdam-netherlands</option>
+                <option value="verona-italy" name="location">verona-italy</option>
+                <option value="edinburgh-uk" name="location">edinburgh-uk</option>
+                <option value="atlanta-usa" name="location">atlanta-usa</option>
+                <option value="santiago-chile" name="location">santiago-chile</option>
+                <option value="athens-greece" name="location">athens-greece</option>
+                <option value="luxembourg-luxembourg" name="location">luxembourg-luxembourg</option>
+                <option value="dublin-ireland" name="location">dublin-ireland</option>
+                <option value="belfast-uk" name="location">belfast-uk</option>
+                <option value="bologna-italy" name="location">bologna-italy</option>
+                <option value="kansas-usa" name="location">kansas-usa</option>
+                <option value="tokyo-japan" name="location">tokyo-japan</option>
+                <option value="seoul-south_korea" name="location">seoul-south_korea</option>
+                <option value="melbourne-australia" name="location">melbourne-australia</option>
+                <option value="kyiv-ukraine" name="location">kyiv-ukraine</option>
+                <option value="riga-latvia" name="location">riga-latvia</option>
+                <option value="tel_aviv-israel" name="location">tel_aviv-israel</option>
+                <option value="washington_dc-usa" name="location">washington_dc-usa</option>
+            </select>
+            
+          </div>
+      </div>
+      <button type="submit">submit</button>
+  </div>
+</form>
+  </header>
+  <div class="container">
+    {{range $index, $artist := .Artists}}
+    <div class="card">
+      <div class="front">
+        <div class="inner">
+          <h3>{{$artist.Name}}</h3>
+          <h3>ID:{{$artist.ID}}</h3>
+          <h3>Members:</h3><br>
+          {{range $artist.Members}}{{.}},{{end}}
+          <p>Creation Date:
+            {{$artist.CreationDate}}</p>
+          <p>First Album:
+            {{$artist.FirstAlbum}}</p>
+        </div>
+        <img src="{{$artist.Image}}" alt="Artist Image">
+      </div>
+      <div class="back">
+        <h4>Locations</h4>
+        {{range $.ArtistLocation.Index}}
+        {{if eq .ID $artist.ID}}
+        {{range .Locations}}
+        <p>{{.}}</p>
+        {{end}}
+        {{end}}
+        {{end}}
+        <br>
+        <br>
+        <h4>Relation</h4>
+        {{range $.ArtistRelation.Index}}
+        {{if eq .ID $artist.ID}}
+        {{range $key, $val := .DatesLocations}}
+        <p>{{$key}}</p>
+        <p>{{range $val}} {{.}}<br>
+          {{end}}</p>
+        {{end}}
+        {{end}}
+        {{end}}
+        <br>
+        <br>
+        <h4>Dates</h4>
+        {{range $.ArtistDates.Index}}
+        {{if eq .ID $artist.ID}}
+        {{range .Dates}}
+        <p>{{.}}</p>
+        {{end}}
+        {{end}}
+        {{end}}
+      </div>
+    </div>
+    {{end}}
+  </div>
+  <script>
+    function updateValue(id) {
+var slider = document.getElementById(id);
+var output = document.getElementById(id + '-value');
+output.innerText = slider.value;
+}
+window.onload = function() {
+updateValue('creation-date-from');
+updateValue('creation-date-to');
+updateValue('album-date-from');
+updateValue('album-date-to');
+}
+</script>
+</body>
+
+</html>
