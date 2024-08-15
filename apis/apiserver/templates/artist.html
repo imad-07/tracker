@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/artist.css">
+</head>
+
+<body>
+    <main style="color:wheat">
+      <div class="container">
+          <section class="home-top">
+            <div class="overlay"></div>
+          </section>
+          <section class="">
+              <div class="s-img">
+                  <img src="{{.Artist.Image}}" alt="">
+                  <div class="info">
+                      <span>since {{.Artist.CreationDate}}</span>
+                      <h2>{{.Artist.Name}}</h2>
+                      <span>{{range .Artist.Members}}{{.}}<br>{{end}}</span>
+                  </div>
+              </div>
+          </section>
+          <section class="cards">
+              <div class="e-card playing">
+                  <div class="image"></div>
+                  
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  
+                
+                      <div class="infotop">
+                
+                  <img class="icon" src="../css/location-marker-svgrepo-com.svg" alt=""> <br>      
+                  Locations
+                <br>
+                <div class="name">{{range .Location.Locations}} <span><a href="/locs/{{.}}">{{.}}</a></span> {{end}}</div>
+                  </div>
+                </div>
+                <div class="e-card playing">
+                  <div class="image"></div>
+                  
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  
+                
+                      <div class="infotop">
+                
+                          <img class="icon" src="../css/calendar-reminder-date-svgrepo-com.svg" alt=""><br>      
+                  Dates
+                <br>
+                <div class="name">{{range .Dates.Dates}}<span>{{.}}</span>{{end}}</div>
+                  </div>
+                </div>
+                <div class="e-card playing">
+                  <div class="image"></div>
+                  
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  <div class="wave"></div>
+                  
+                
+                      <div class="infotop">
+                
+                          <img class="icon" src="../css/park-concert-shell-svgrepo-com.svg" alt=""><br>      
+                  Relations
+                <br>
+                <div class="name">{{range $key, $value := .Relations.DatesLocations}}{{$key}}: {{range $value}}<span>{{.}}</span>{{end}}{{end}}</div>
+                  </div>
+                </div>
+          </section>
+      </div>
+    </main>
+</body>
+
+</html>

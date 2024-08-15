@@ -38,4 +38,9 @@ type PageData struct {
 	ArtistLocation ArtistLocation
 	ArtistDates    ArtistDates
 	ArtistRelation ArtistRelation
+	Locs			map[string]bool
+}
+type NominatimResponse struct {
+	Lat string `json:"lat"`
+	Lon string `json:"lon"`
 }
