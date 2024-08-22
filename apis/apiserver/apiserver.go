@@ -11,14 +11,6 @@ import (
 	"api/apis/structs"
 )
 
-var locs map[string]bool
-var data structs.PageData
-var artists []structs.Artists
-var artistRelation structs.ArtistRelation
-var artistLocation structs.ArtistLocation
-var artistDates structs.ArtistDates
-var e error
-
 func Handler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		methodNotallowedHandler(w)
@@ -28,7 +20,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		notFoundHandler(w)
 		return
 	}
-	artists, artistRelation, artistLocation, artistDates, e = apirunner.ApiRunner()
+	artists, artistRelation, artistLocation, artistDates, e := apirunner.ApiRunner()
 	if e != nil {
 		serverHandler(w)
 		return
@@ -44,7 +36,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	albumDateTo := r.FormValue("album-date-to")
 	location := r.FormValue("location")
 	members := r.Form["members"]
-	locs = Getloc(artistLocation)
+	locs := Getloc(artistLocation)
 
 	xx := stint(members)
 	df, err1 := strconv.Atoi(creationDateFrom)
@@ -67,6 +59,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		if isint(ids, x.ID) {
 			if x.CreationDate >= df && x.CreationDate <= dt && adate(x.FirstAlbum) >= af && adate(x.FirstAlbum) <= at && isint(xx, len(x.Members)) {
 				if err1 != nil || err2 != nil || err3 != nil || err4 != nil {
+					fmt.Println("ghjkl")
 					badrequestHandler(w)
 					return
 				}
@@ -77,7 +70,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	data = structs.PageData{
+	data := structs.PageData{
 		Artists:        far,
 		ArtistLocation: artistLocation,
 		ArtistDates:    artistDates,
@@ -199,15 +192,13 @@ func Getloc(location structs.ArtistLocation) map[string]bool {
 
 func HandleLocations(w http.ResponseWriter, r *http.Request) {
 	locations := strings.Split(r.URL.Path, "/")
+	_, _, artistLocation, _, _ := apirunner.ApiRunner()
+	locs := Getloc(artistLocation)
+	if exists := locs[locations[len(locations)-1]]; !exists {
+		badrequestHandler(w)
+		return
+	}
 
-	if _, exists := locs[locations[len(locations)-1]]; !exists && locations[len(locations)-1] == "" {
-		badrequestHandler(w)
-		return
-	}
-	if locations[len(locations)-1] == "" {
-		badrequestHandler(w)
-		return
-	}
 	link := apirunner.Geolocator(locations[len(locations)-1])
 	if strings.HasPrefix(link, "no results found for city:") {
 		badrequestHandler(w)
@@ -225,24 +216,31 @@ func HandleArtist(w http.ResponseWriter, r *http.Request) {
 		notFoundHandler(w)
 		return
 	}
+
 	tmpl, err := template.ParseFiles("apis/apiserver/templates/artist.html")
 	if err != nil {
 		serverHandler(w)
 		fmt.Println(err)
 		return
 	}
+
 	id := r.URL.Query().Get("id")
 	IDint, err := strconv.Atoi(id)
-	if err != nil || IDint <= 0 || IDint > len(data.Artists) {
+
+	artists, artistRelation, artistLocation, artistDates, e := apirunner.ApiRunner()
+	if e != nil {
+		serverHandler(w)
+	}
+
+	if err != nil || IDint <= 0 || IDint > len(artists) {
 		badrequestHandler(w)
 		return
 	}
-
 	err = tmpl.Execute(w, map[string]interface{}{
-		"Artist":    data.Artists[IDint-1],
-		"Location":  data.ArtistLocation.Index[IDint-1],
-		"Dates":     data.ArtistDates.Index[IDint-1],
-		"Relations": data.ArtistRelation.Index[IDint-1],
+		"Artist":    artists[IDint-1],
+		"Location":  artistLocation.Index[IDint-1],
+		"Dates":     artistDates.Index[IDint-1],
+		"Relations": artistRelation.Index[IDint-1],
 	})
 	if err != nil {
 		fmt.Println(err)
